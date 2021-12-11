@@ -1,6 +1,6 @@
 # mid-bootcamp-project-classification
 GitHub Repository for the files of the Mid Bootcamp Project from Ironhack. Shared with Guillermo Varela.
-## CASE STUDY: CLASSIFICATION ##
+# CASE STUDY: CLASSIFICATION #
 # Scenario #
 You are working as a risk analyst with a bank. Apart from the other banking and loan services, the bank also provides credit card services that are a very important source of revenue for the bank. The bank wants to understand the demographics and other characteristics of its customers that accept a credit card offer and that do not accept a credit card.
 
