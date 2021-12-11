@@ -44,13 +44,15 @@ SHOW VARIABLES LIKE 'secure_file_priv'; -- this gives you the path you need to s
 -- Step 3
 SET sql_safe_updates = 0;
 
-LOAD DATA LOCAL INFILE 'creditcardmarketing_no_headers.csv' 
+LOAD DATA INFILE 'creditcardmarketing_no_headers.csv' 
 INTO TABLE credit_card_classification.credit_card_data
 FIELDS TERMINATED BY ',';
 
-```sql
+/*```sql
 SHOW VARIABLES LIKE 'local_infile'; -- This query would show you the status of the variable ‘local_infile’. If it is off, use the next command, otherwise you should be good to go
 
 SET GLOBAL local_infile = 1;
-```
+```*/
+
+SELECT COUNT(`Customer Number`) FROM credit_card_classification.credit_card_data;
 
