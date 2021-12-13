@@ -143,3 +143,91 @@ ORDER BY `# Bank Accounts Open`;
 
 /*There is an apparent negative correlation between bank_accounts_open and total_cards_held: the more accounts open,
 the lower the sum of cards held.*/
+
+-- 11. Your managers are only interested in the customers with the following properties:
+
+    -- Credit rating medium or high
+    -- Credit cards held 2 or less
+    -- Owns their own home
+    -- Household size 3 or more
+
+-- For the rest of the things, they are not too concerned. Write a simple query to find what are the options available for them? 
+-- Can you filter the customers who accepted the offers here?
+
+# Query for the managers' request
+SELECT `Customer Number`, `Credit Rating`, `# Credit Cards Held`, `Own Your Home`, `Household Size`, `Offer Accepted`
+FROM credit_card_classification.credit_card_data
+WHERE (`Credit Rating` <> 'Low' 
+AND `# Credit Cards Held` <= 2 
+AND `Own Your Home` = 'Yes' 
+AND `Household Size` >=3
+);
+
+# Query with Offer Accepted as 'Yes'
+WITH cte_manager_request AS (
+SELECT `Customer Number`, `Credit Rating`, `# Credit Cards Held`, `Own Your Home`, `Household Size`, `Offer Accepted`
+FROM credit_card_classification.credit_card_data
+WHERE (`Credit Rating` <> 'Low' 
+AND `# Credit Cards Held` <= 2 
+AND `Own Your Home` = 'Yes' 
+AND `Household Size` >=3
+))
+SELECT * FROM cte_manager_request
+WHERE `Offer Accepted` = 'Yes';
+
+-- 12. Your managers want to find out the list of customers whose average balance is less than the average balance of 
+-- all the customers in the database. Write a query to show them the list of such customers. 
+-- You might need to use a subquery for this problem.
+
+SELECT `Customer Number`, `Average Balance`, 
+AVG(`Average Balance`) OVER() AS global_avg_balance
+FROM credit_card_classification.credit_card_data
+WHERE `Average Balance`< (
+SELECT ROUND(AVG(`Average Balance`),2) 
+FROM credit_card_classification.credit_card_data
+);
+
+-- 13. Since this is something that the senior management is regularly interested in, 
+-- create a view called `Customers__Balance_View1` of the same query.
+
+CREATE VIEW Customers__Balance_View1 AS
+SELECT `Customer Number`, `Average Balance`
+FROM credit_card_classification.credit_card_data
+WHERE `Average Balance`< (
+SELECT ROUND(AVG(`Average Balance`),2) 
+FROM credit_card_classification.credit_card_data
+);
+
+-- 14. What is the number of people who accepted the offer vs number of people who did not?
+SELECT `Offer Accepted` as offer_accepted, COUNT(*) as count
+FROM credit_card_classification.credit_card_data 
+GROUP BY `Offer Accepted` 
+ORDER BY count;
+
+-- 15. Your managers are more interested in customers with a credit rating of high or medium. 
+-- What is the difference in average balances of the customers with high credit card rating and low credit card rating?
+WITH cte AS (
+SELECT `Credit Rating`, ROUND(AVG(`Average Balance`),2) AS avg_bal_per_rating
+FROM  credit_card_classification.credit_card_data
+WHERE `Credit Rating` <> 'Low'
+GROUP BY `Credit Rating`
+ORDER BY `Credit Rating` DESC
+)
+SELECT ROUND(MAX(avg_bal_per_rating)-MIN(avg_bal_per_rating),2) 
+AS high_minus_medium_rating
+FROM cte;
+
+-- 16. In the database, which all types of communication (`mailer_type`) were used and with how many customers?
+SELECT `Mailer Type`, COUNT(`Customer Number`) AS count_customers
+FROM credit_card_classification.credit_card_data
+GROUP BY `Mailer Type`;
+
+-- 17. Provide the details of the customer that is the 11th least `Q1_balance` in your database.
+WITH cte AS (
+SELECT * FROM credit_card_classification.credit_card_data
+ORDER BY `Q1 Balance`
+LIMIT 11
+)
+SELECT * FROM cte
+ORDER BY `Q1 Balance` DESC
+LIMIT 1;
