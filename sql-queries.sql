@@ -165,7 +165,7 @@ AND `Household Size` >=3
 
 # Query with Offer Accepted as 'Yes'
 WITH cte_manager_request AS (
-SELECT `Customer Number`, `Credit Rating`, `# Credit Cards Held`, `Own Your Home`, `Household Size`, `Offer Accepted`
+SELECT *
 FROM credit_card_classification.credit_card_data
 WHERE (`Credit Rating` <> 'Low' 
 AND `# Credit Cards Held` <= 2 
